@@ -41,7 +41,8 @@ density = np.zeros((nt,nx))
 density[0,:] = np.absolute(wp_gauss[:]) ** 2
 
 final_density =np.zeros((n_frames,nx))
-#Algo devant retourner la densité de probabilité de présence de la particule à différents instants
+
+#Algo devant retourner la densité de probabilité de présence de la particule à différents instants
 
 plot_title = "E/Vo="+str(e)
 
