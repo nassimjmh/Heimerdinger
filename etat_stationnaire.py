@@ -31,7 +31,15 @@ def etats_stationnaires(dx, nx, V, n_states=5):
         plt.plot(x, psi**2 + energies[i], label=f"État {i} (E = {energies[i]:.2f})")
 
     plt.plot(x, V, 'k--', label='Potentiel V(x)')
-    plt.title("États stationnaires")
+    
+    # Calculate potential width (a) for the states plot
+    potential_indices = np.where(V == v0)[0]
+    if len(potential_indices) > 0:
+        a = x[potential_indices[-1]] - x[potential_indices[0]]
+    else:
+        a = 0.1
+        
+    plt.title(f"États stationnaires\nv0 = {v0}, e = {e}, a = {a:.3f}")
     plt.xlabel("x")
     plt.ylabel("Énergie / Densité de probabilité")
     plt.legend()
@@ -62,12 +70,12 @@ if input("Voulez-vous utiliser des valeurs personnalisées ? oui - non : ") == '
 else:
     dt = 1E-7
     dx = 0.001
-    nt = 90000
+    nt = 50000
     nd = int(nt/1000)+1
     xc = 0.6
     sigma = 0.05
     v0 = -4000
-    e = 5
+    e = 5000
 
 nx = int(1/dx)*2
 n_frame = nd
@@ -102,14 +110,22 @@ for i in range(1, nt):
         it += 1
         final_densite[it][:] = densite[i][:]
 
-plot_title = "Marche Ascendante avec E/Vo=" + str(e)
+# Calculate potential width (a)
+potential_indices = np.where((o >= 0.8) & (o <= 0.9))[0]
+if len(potential_indices) > 0:
+    a = o[potential_indices[-1]] - o[potential_indices[0]]
+else:
+    a = 0.1  # Default value if potential region is empty
+
+plot_title = "Puit de potentiel avec E/Vo=" + str(e)
+subtitle = f"v0 = {v0} | e = {e} | a = {a:.3f}"
 
 fig, ax = plt.subplots()
 line, = ax.plot([], [], lw=2)
-ax.set_ylim(0, 13)
+ax.set_ylim(-6, 11)
 ax.set_xlim(0, 2)
 ax.plot(o, V, label="Potentiel")
-ax.set_title(plot_title)
+ax.set_title(plot_title + "\n" + subtitle)
 ax.set_xlabel("x")
 ax.set_ylabel("Densité de probabilité de présence")
 ax.legend()
